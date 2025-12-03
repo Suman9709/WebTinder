@@ -14,46 +14,12 @@ app.use(cookieParser())
 //     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 //     credentials: true,
 // }));
-
-
-// Allowed origins (sanitize trailing slash)
-const allowedOrigins = [
-    (process.env.CORS_ORIGIN || "").replace(/\/$/, ""),
-    "http://localhost:5173".replace(/\/$/, "")
-].filter(Boolean);
-
-// CORS middleware
 app.use(cors({
-    origin: function (origin, callback) {
-        // allow server-to-server or Postman requests (no origin)
-        if (!origin) return callback(null, true);
-
-        const sanitizedOrigin = origin.replace(/\/$/, ""); // remove trailing slash from incoming origin
-
-        if (allowedOrigins.includes(sanitizedOrigin)) {
-            return callback(null, true);
-        }
-
-        return callback(new Error(`CORS blocked for origin: ${sanitizedOrigin}`));
-    },
+    origin: process.env.CORS_ORIGIN,  // Allow frontend to access backend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-    methods: ["GET","POST","PUT","PATCH","DELETE"],
-    allowedHeaders: ["Content-Type","Authorization"],
 }));
-
-// Preflight OPTIONS requests
-app.options("*", cors({
-    origin: function(origin, callback) {
-        if (!origin) return callback(null, true);
-        const sanitizedOrigin = origin.replace(/\/$/, "");
-        if (allowedOrigins.includes(sanitizedOrigin)) {
-            return callback(null, true);
-        }
-        return callback(new Error(`CORS blocked for origin: ${sanitizedOrigin}`));
-    },
-    credentials: true
-}));
-
 
 
 
