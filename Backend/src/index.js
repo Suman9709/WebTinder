@@ -15,26 +15,45 @@ app.use(cookieParser())
 //     credentials: true,
 // }));
 
+
+// Allowed origins (sanitize trailing slash)
 const allowedOrigins = [
-    process.env.CORS_ORIGIN?.replace(/\/$/, ""), // Vercel frontend
-    "http://localhost:5173",                     // Local frontend
-    process.env.RENDER_EXTERNAL_URL?.replace(/\/$/, "") // optional backend self-ping
+    (process.env.CORS_ORIGIN || "").replace(/\/$/, ""),
+    "http://localhost:5173".replace(/\/$/, "")
 ].filter(Boolean);
 
+// CORS middleware
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (e.g., server-to-server, Postman)
+        // allow server-to-server or Postman requests (no origin)
         if (!origin) return callback(null, true);
 
-        const sanitizedOrigin = origin.replace(/\/$/, "");
-        if (allowedOrigins.includes(sanitizedOrigin)) return callback(null, true);
+        const sanitizedOrigin = origin.replace(/\/$/, ""); // remove trailing slash from incoming origin
+
+        if (allowedOrigins.includes(sanitizedOrigin)) {
+            return callback(null, true);
+        }
 
         return callback(new Error(`CORS blocked for origin: ${sanitizedOrigin}`));
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET","POST","PUT","PATCH","DELETE"],
+    allowedHeaders: ["Content-Type","Authorization"],
 }));
+
+// Preflight OPTIONS requests
+app.options("*", cors({
+    origin: function(origin, callback) {
+        if (!origin) return callback(null, true);
+        const sanitizedOrigin = origin.replace(/\/$/, "");
+        if (allowedOrigins.includes(sanitizedOrigin)) {
+            return callback(null, true);
+        }
+        return callback(new Error(`CORS blocked for origin: ${sanitizedOrigin}`));
+    },
+    credentials: true
+}));
+
 
 
 
