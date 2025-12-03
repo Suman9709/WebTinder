@@ -14,7 +14,7 @@ app.use(cookieParser())
 // }))
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN || "https://web-tinder-5v3c.vercel.app/",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));
