@@ -15,7 +15,7 @@ app.use(cookieParser())
 //     credentials: true,
 // }));
 app.use(cors({
-    origin: "*",  // Allow frontend to access backend
+    origin: "https://web-tinder-5v3c.vercel.app",  // Allow frontend to access backend
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
