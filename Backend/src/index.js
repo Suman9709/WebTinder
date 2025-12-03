@@ -8,16 +8,41 @@ const http = require('http');
 //this is the middleware provided by the express to read the json formate of input
 app.use(express.json())
 app.use(cookieParser())
+
 // app.use(cors({
-//     origin:process.env.CORS_ORIGIN  ,
+//     origin: process.env.CORS_ORIGIN,
+//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 //     credentials: true,
-// }))
+// }));
+
+
+const allowedOrigins = [
+    process.env.CORS_ORIGIN?.replace(/\/$/, ""), // sanitize: remove trailing slash
+    "http://localhost:5173"
+];
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    origin: function (origin, callback) {
+        // console.log("Incoming Origin:", origin);
+        // console.log("Allowed Origins:", allowedOrigins);
+
+        // allow requests like POSTMAN or server-to-server (no origin)
+        if (!origin) return callback(null, true);
+
+        const sanitizedOrigin = origin.replace(/\/$/, "");
+
+        if (allowedOrigins.includes(sanitizedOrigin)) {
+            return callback(null, true);
+        } else {
+            // console.log("❌ BLOCKED by CORS:", sanitizedOrigin);
+            return callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
 
 
 const PORT = 3000;
