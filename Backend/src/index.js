@@ -17,31 +17,30 @@ app.use(cookieParser())
 
 
 const allowedOrigins = [
-    process.env.CORS_ORIGIN?.replace(/\/$/, ""), // sanitize: remove trailing slash
+    process.env.CORS_ORIGIN?.replace(/\/$/, ""),
+    process.env.RENDER_EXTERNAL_URL?.replace(/\/$/, ""),
     "http://localhost:5173"
-];
+].filter(Boolean);
 
 app.use(cors({
     origin: function (origin, callback) {
-        // console.log("Incoming Origin:", origin);
-        // console.log("Allowed Origins:", allowedOrigins);
+        console.log("🟡 Incoming Origin:", origin);
+        console.log("🟢 Allowed Origins:", allowedOrigins);
 
-        // allow requests like POSTMAN or server-to-server (no origin)
-        if (!origin) return callback(null, true);
+        if (!origin) return callback(null, true); // POSTMAN, server-to-server OK
 
         const sanitizedOrigin = origin.replace(/\/$/, "");
 
         if (allowedOrigins.includes(sanitizedOrigin)) {
             return callback(null, true);
-        } else {
-            // console.log("❌ BLOCKED by CORS:", sanitizedOrigin);
-            return callback(new Error("Not allowed by CORS"));
         }
+
+        console.log("❌ BLOCKED ORIGIN:", sanitizedOrigin);
+        return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
 
 
 
