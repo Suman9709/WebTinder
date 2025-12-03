@@ -8,10 +8,18 @@ const http = require('http');
 //this is the middleware provided by the express to read the json formate of input
 app.use(express.json())
 app.use(cookieParser())
+// app.use(cors({
+//     origin:process.env.CORS_ORIGIN  ,
+//     credentials: true,
+// }))
+
 app.use(cors({
-    origin:process.env.CORS_ORGIN || "https://web-tinder-5v3c.vercel.app" ,
+    origin: process.env.CORS_ORIGIN,
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-}))
+}));
+
+
 const PORT = 3000;
 
 
