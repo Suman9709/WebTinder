@@ -47,7 +47,7 @@ app.use(cors({
 
 const PORT = 3000;
 
-
+app.options("*", cors());
 const authRouter = require("./Router/auth.js")
 const profileRouter = require("./Router/profile.js")
 const requestRouter = require("./Router/request.js");
