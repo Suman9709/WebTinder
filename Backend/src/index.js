@@ -15,32 +15,26 @@ app.use(cookieParser())
 //     credentials: true,
 // }));
 
-
 const allowedOrigins = [
-    process.env.CORS_ORIGIN?.replace(/\/$/, ""),
-    process.env.RENDER_EXTERNAL_URL?.replace(/\/$/, ""),
-    "http://localhost:5173"
+    process.env.CORS_ORIGIN?.replace(/\/$/, ""), // Vercel frontend
+    "http://localhost:5173",                     // Local frontend
+    process.env.RENDER_EXTERNAL_URL?.replace(/\/$/, "") // optional backend self-ping
 ].filter(Boolean);
 
 app.use(cors({
     origin: function (origin, callback) {
-        console.log("🟡 Incoming Origin:", origin);
-        console.log("🟢 Allowed Origins:", allowedOrigins);
-
-        if (!origin) return callback(null, true); // POSTMAN, server-to-server OK
+        // Allow requests with no origin (e.g., server-to-server, Postman)
+        if (!origin) return callback(null, true);
 
         const sanitizedOrigin = origin.replace(/\/$/, "");
+        if (allowedOrigins.includes(sanitizedOrigin)) return callback(null, true);
 
-        if (allowedOrigins.includes(sanitizedOrigin)) {
-            return callback(null, true);
-        }
-
-        console.log("❌ BLOCKED ORIGIN:", sanitizedOrigin);
-        return callback(new Error("Not allowed by CORS"));
+        return callback(new Error(`CORS blocked for origin: ${sanitizedOrigin}`));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }));
-
 
 
 
@@ -92,7 +86,7 @@ setInterval(() => {
     fetch(API_PING_URL)
         .then(response => console.log("Self-ping successful:", response.status))
         .catch(error => console.error("Self-ping failed:", error));
-}, 14*60*1000)
+}, 14 * 60 * 1000)
 
 server.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
