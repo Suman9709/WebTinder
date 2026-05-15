@@ -83,3 +83,7 @@ JWT_SECRET_KEY =
 JWT_SECRET_KEY_EXPIRY=
 CORS_ORIGIN=
 
+
+
+<img width="1606" height="1238" alt="Screenshot 2026-05-15 233811" src="https://github.com/user-attachments/assets/a4fe0ae0-5c4a-4762-bafd-898cada72558" />
+
