@@ -88,3 +88,6 @@ CORS_ORIGIN=
 <img width="1606" height="1238" alt="Screenshot 2026-05-15 233811" src="https://github.com/user-attachments/assets/a4fe0ae0-5c4a-4762-bafd-898cada72558" />
 
 <img width="1361" height="961" alt="Screenshot 2026-05-15 233822" src="https://github.com/user-attachments/assets/f9002b0b-b239-4f5f-b7cc-3f0665fad5ba" />
+
+<img width="2839" height="1308" alt="Screenshot 2026-05-15 234422" src="https://github.com/user-attachments/assets/b6102b91-6a9e-48d4-9665-7b8a9045da5c" />
+
