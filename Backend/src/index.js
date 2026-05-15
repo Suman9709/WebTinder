@@ -1,6 +1,6 @@
+require('dotenv').config();
 const express = require('express')
 const connectDB = require("./config/database.js")
-require('dotenv').config();
 const cookieParser = require("cookie-parser")
 const cors = require('cors')
 const app = express();
@@ -16,7 +16,7 @@ app.use(cookieParser())
 // }));
 app.use(cors({
     origin: process.env.CORS_ORIGIN,  // Allow frontend to access backend
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
 }));
