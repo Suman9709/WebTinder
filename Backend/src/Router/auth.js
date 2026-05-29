@@ -134,8 +134,8 @@ authRouter.post("/logout", async (req, res) => {
 })
 
 
-authRouter.get('/ping', (req, res) => {
-    return res.send('Server is running')
-})
+// authRouter.get('/ping', (req, res) => {
+//     return res.send('Server is running')
+// })
 
 module.exports = authRouter;

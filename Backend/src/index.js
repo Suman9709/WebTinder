@@ -41,37 +41,22 @@ instilizeSocket(server)
 connectDB()
 
 
-// request handler go to browser and type url localhost:3000/test
-// app.use("/test", (req, res) => {
-//     res.send("Hello from the server")
-// })
 
-// app.use("/user", (req, res, next)=>{ 
-//     console.log("User 1 handled");
-//     // res.send("Response from user 1");
-//     next(); // this is given by expressjs
-
-// },
-// (req, res)=>{ // this will not work even if we comment the above response for that we have to use next() then if the 1st will not work then 2nd will work
-//     console.log("user 2 handled");
-//     res.send("User 2 response");
-
-// })
 
 app.get('/', (req, res) => {
     res.send('Welcome to WebTinder API');
 });
 
 
-const API_PING_URL = 'https://webtinder-1.onrender.com/ping'
+// const API_PING_URL = 'https://webtinder-1.onrender.com/ping'
 // const API_PING_URL = 'http://localhost:3000/ping'
 
 
-setInterval(() => {
-    fetch(API_PING_URL)
-        .then(response => console.log("Self-ping successful:", response.status))
-        .catch(error => console.error("Self-ping failed:", error));
-}, 14 * 60 * 1000)
+// setInterval(() => {
+//     fetch(API_PING_URL)
+//         .then(response => console.log("Self-ping successful:", response.status))
+//         .catch(error => console.error("Self-ping failed:", error));
+// }, 14 * 60 * 1000)
 
 server.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
