@@ -9,17 +9,11 @@ const http = require('http');
 app.use(express.json())
 app.use(cookieParser())
 
-// app.use(cors({
-//     origin: process.env.CORS_ORIGIN,
-//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-//     credentials: true,
-// }));
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,  // Allow frontend to access backend
-    // methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
-    // allowedHeaders: ["Content-Type", "Authorization"],
+    origin: process.env.CORS_ORIGIN ,  // Allow frontend to access backend
     credentials: true,
-}));
+})
+);
 
 
 
@@ -29,17 +23,28 @@ const authRouter = require("./Router/auth.js")
 const profileRouter = require("./Router/profile.js")
 const requestRouter = require("./Router/request.js");
 const userRouter = require('./Router/user.js');
+const chatRouter = require('./Router/chat.js');
 const instilizeSocket = require('./utils/socket.js');
 
 app.use("/", authRouter)
 app.use("/", profileRouter)
 app.use("/", requestRouter)
 app.use("/", userRouter);
+// implemented new feature of chat saving
+app.use("/", chatRouter)
 
 const server = http.createServer(app)
 instilizeSocket(server)
 connectDB()
+    .then(() => {
+        console.log("Database Connection established successfully...");
+        server.listen(PORT, () => {
+            console.log(`Server is listening on port ${PORT}`);
 
+        });
+    }).catch((error) => {
+        console.error("Database connection failed", error.message);
+    })
 
 
 
@@ -58,7 +63,3 @@ app.get('/', (req, res) => {
 //         .catch(error => console.error("Self-ping failed:", error));
 // }, 14 * 60 * 1000)
 
-server.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
-
-});

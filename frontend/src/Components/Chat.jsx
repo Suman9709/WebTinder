@@ -3,6 +3,7 @@ import { useParams } from 'react-router'
 import sendbutton from "/public/send.png"
 import { createSocketConnection } from '../Utils/socket';
 import { useSelector } from "react-redux"
+import { BASE_URL } from './constant';
 
 const Chat = () => {
   const { targetUserId } = useParams();
@@ -14,10 +15,31 @@ const Chat = () => {
   const [message, setMessage] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [socket, setSocket] = useState(null);
-  
+
+  const fetchMessages = async () => {
+  try {
+    const response = await fetch( BASE_URL + `/chat/${targetUserId}`,
+      {
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    // console.log("Chat API Response:", data);
+
+    setMessage(data.data);
+  } catch (error) {
+    console.log(
+      "Error fetching messages",
+      error.message
+    );
+  }
+};
+
   useEffect(() => {
     if (!userId) return; // wait until user is available
-
+    fetchMessages();
     const socketInstance = createSocketConnection();
     setSocket(socketInstance);
 
@@ -27,25 +49,29 @@ const Chat = () => {
       targetUserId,
     });
 
-    socketInstance.on("messageReceived", ({ firstName, text }) => {
-      setMessage(prev => [...prev, { firstName, text }]);
-    });
+    // socketInstance.on("messageReceived", ({ firstName, text }) => {
+    //   setMessage(prev => [...prev, { firstName, text }]);
+    // });
+
+    socketInstance.on("messageReceived", (newMsg) => {
+      setMessage(prev => [...prev, newMsg]);
+    })
 
     return () => socketInstance.disconnect();
   }, [userId, targetUserId]);
 
   const sendMessage = () => {
-  if (!socket) return; // socket might not be ready yet
+    if (!socket) return; // socket might not be ready yet
 
-  socket.emit("sendMessage", {
-    firstName: user.firstName,
-    userId,
-    targetUserId,
-    text: newMessage,
-  });
+    socket.emit("sendMessage", {
+      firstName: user.firstName,
+      userId,
+      targetUserId,
+      text: newMessage,
+    });
 
-  setNewMessage(""); // clear input
-}
+    setNewMessage(""); // clear input
+  }
 
   return (
     <div className=' w-1/2 mx-auto mt-18 border border-gray-600 h-[70vh] flex flex-col' >
@@ -56,7 +82,12 @@ const Chat = () => {
           message.map((msg, index) => {
             return (
               <div key={index} >
-                <div className="chat chat-start">
+                <div
+                  className={`chat ${msg.senderId === userId
+                      ? "chat-end"
+                      : "chat-start"
+                    }`}
+                >
                   <div className="chat-header">
                     {msg.firstName}
                     {/* <time className="text-xs opacity-50">2 hours ago</time> */}

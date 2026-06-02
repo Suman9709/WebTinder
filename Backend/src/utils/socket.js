@@ -1,10 +1,12 @@
-const socket = require('socket.io')
+const socket = require('socket.io');
+const Message = require('../models/messageModel');
 require('dotenv').config();
 const instilizeSocket = (server) => {
 
     const io = socket(server, {
         cors: {
-            origin: "http://localhost:5173" || process.env.CORS,
+            origin:process.env.CORS_ORIGIN,
+            credentials: true,
         }
     })
 
@@ -17,15 +19,36 @@ const instilizeSocket = (server) => {
             socket.join(roomId);
         });
 
-        socket.on("sendMessage", ({
+        socket.on("sendMessage", async ({
             firstName,
             userId,
             targetUserId,
             text,
         }) => {
-            const roomId = [userId, targetUserId].sort().join("_");
-            io.to(roomId).emit("messageReceived", { firstName, text })
+            if (!text?.trim()) return;
+            try {
+                const roomId = [userId, targetUserId].sort().join("_");
+                const message = new Message({
+                    senderId: userId,
+                    receiverId: targetUserId,
+                    text,
+                })
+                await message.save();
+                io.to(roomId).emit("messageReceived", { 
+                    _id: message._id,
+                    firstName, 
+                    senderId: userId,
+                    receiverId: targetUserId,
+                    text,
+                    createdAt: message.createdAt,
+                });
+            }
+            catch (error) {
+                console.log("Socket Error", error.message);
+            }
         });
+
+
         socket.on("disconnect", () => {
 
         })
