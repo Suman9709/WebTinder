@@ -43,7 +43,7 @@ const Chat = () => {
         setHasMore(false);
         return;
       }
-      const fetchedMessages = [...data.data].reverse();
+      const fetchedMessages = [...data.data];
 
       setMessage((prev) => [...fetchedMessages, ...prev,]);
 
