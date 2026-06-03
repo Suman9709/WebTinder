@@ -5,7 +5,7 @@ const instilizeSocket = (server) => {
 
     const io = socket(server, {
         cors: {
-            origin:process.env.CORS_ORIGIN,
+            origin: process.env.CORS_ORIGIN,
             credentials: true,
         }
     })
@@ -34,9 +34,9 @@ const instilizeSocket = (server) => {
                     text,
                 })
                 await message.save();
-                io.to(roomId).emit("messageReceived", { 
+                io.to(roomId).emit("messageReceived", {
                     _id: message._id,
-                    firstName, 
+                    firstName,
                     senderId: userId,
                     receiverId: targetUserId,
                     text,
@@ -47,7 +47,16 @@ const instilizeSocket = (server) => {
                 console.log("Socket Error", error.message);
             }
         });
-
+        socket.on("typing", ({
+            userId,
+            targetUserId,
+            firstName, }) => {
+            const roomId = [userId, targetUserId].sort().join("_");
+            socket.to(roomId).emit("userTyping", {
+                firstName,
+            })
+        }
+        )
 
         socket.on("disconnect", () => {
 
