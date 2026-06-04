@@ -7,15 +7,16 @@ const redishClient = createClient({
         tls: true,
         rejectUnauthorized: false,
     },
-});
 
+});
+console.log("REDIS_URL =", process.env.REDIS_URL);
 redishClient.on("error", (err) => {
     console.log("Redis Client Error", err);
 })
 
 const connectRedis = async () => {
     await redishClient.connect();
-    console.log("Connected to Redis successfully...");
+    // console.log("Connected to Redis successfully...");
 }
 
 module.exports = {
