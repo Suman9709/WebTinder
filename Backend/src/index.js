@@ -3,14 +3,18 @@ const express = require('express')
 const connectDB = require("./config/database.js")
 const cookieParser = require("cookie-parser")
 const cors = require('cors')
+const { createRateLimiter } = require('./middlewares/rateLimiter.js');
+const { connectRedis } = require('./config/redish.js');
 const app = express();
+
 const http = require('http');
 //this is the middleware provided by the express to read the json formate of input
 app.use(express.json())
+
 app.use(cookieParser())
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN ,  // Allow frontend to access backend
+    origin: process.env.CORS_ORIGIN,  // Allow frontend to access backend
     credentials: true,
 })
 );
@@ -26,24 +30,30 @@ const userRouter = require('./Router/user.js');
 const chatRouter = require('./Router/chat.js');
 const instilizeSocket = require('./utils/socket.js');
 
-app.use("/", authRouter)
-app.use("/", profileRouter)
-app.use("/", requestRouter)
-app.use("/", userRouter);
-// implemented new feature of chat saving
-app.use("/", chatRouter)
+
 
 const server = http.createServer(app)
 instilizeSocket(server)
-connectDB()
+Promise.all([connectDB(), connectRedis()])
     .then(() => {
         console.log("Database Connection established successfully...");
+        console.log("Connected to Redis successfully...");
+        app.use(createRateLimiter()); // Apply rate limiter to all routes (100 requests per 15 minutes)
+
+
+        app.use("/", authRouter)
+        app.use("/", profileRouter)
+        app.use("/", requestRouter)
+        app.use("/", userRouter);
+        // implemented new feature of chat saving
+        app.use("/", chatRouter)
+
         server.listen(PORT, () => {
             console.log(`Server is listening on port ${PORT}`);
 
         });
     }).catch((error) => {
-        console.error("Database connection failed", error.message);
+        console.error("Application startup failed:", error);
     })
 
 
@@ -52,14 +62,4 @@ app.get('/', (req, res) => {
     res.send('Welcome to WebTinder API');
 });
 
-
-// const API_PING_URL = 'https://webtinder-1.onrender.com/ping'
-// const API_PING_URL = 'http://localhost:3000/ping'
-
-
-// setInterval(() => {
-//     fetch(API_PING_URL)
-//         .then(response => console.log("Self-ping successful:", response.status))
-//         .catch(error => console.error("Self-ping failed:", error));
-// }, 14 * 60 * 1000)
 
