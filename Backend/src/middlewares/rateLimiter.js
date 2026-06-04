@@ -8,8 +8,8 @@ const createRateLimiter = () => {
       sendCommand: (...args) => redishClient.sendCommand(args),
     }),
 
-    windowMs:  60 * 1000,
-    max: 3,
+    windowMs: 15* 60 * 1000,
+    max: 100,
 
     standardHeaders: true,
     legacyHeaders: false,
