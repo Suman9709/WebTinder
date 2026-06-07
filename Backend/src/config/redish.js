@@ -9,7 +9,7 @@ const redishClient = createClient({
     },
 
 });
-console.log("REDIS_URL =", process.env.REDIS_URL);
+// console.log("REDIS_URL =", process.env.REDIS_URL);
 redishClient.on("error", (err) => {
     console.log("Redis Client Error", err);
 })

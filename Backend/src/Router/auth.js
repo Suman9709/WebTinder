@@ -56,7 +56,7 @@ authRouter.post("/signup", async (req, res) => {
         const savedUser = await user.save();
         //create a jwt token
         const token = await savedUser.getJWT()
-        console.log("SignUp token", token);
+        // console.log("SignUp token", token);
 
         //add the token to cookies and send the response back to the user
         // res.cookie("token", "sdfghjktryuibvnm") //test
@@ -95,7 +95,7 @@ authRouter.post("/login", async (req, res) => {
 
             //create a jwt token
             const token = await user.getJWT()
-            console.log("Login token", token);
+            // console.log("Login token", token);
 
             //add the token to cookies and send the response back to the user
             // res.cookie("token", "sdfghjktryuibvnm") //test
@@ -127,7 +127,9 @@ authRouter.post("/login", async (req, res) => {
 authRouter.post("/logout", async (req, res) => {
     res.cookie("token", null, {
         expires: new Date(Date.now()),
-        httpOnly: true
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
     });
 
     res.send("Logout successful");

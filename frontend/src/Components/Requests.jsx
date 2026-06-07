@@ -16,7 +16,7 @@ const Requests = () => {
       // console.log(response.data);
       dispatch(removeRequest(_id))
     } catch (error) {
-
+      console.error(error)
     }
   }
 
@@ -55,7 +55,7 @@ const Requests = () => {
         ) : (
           <div className="space-y-2">
             {requests.map((request) => {
-                
+
               const user = request.fromUserId;
               if (!user) return null;
               const { _id, firstName, lastName, age, gender, description, imageUrl } = user;

@@ -91,7 +91,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
 // })
 
 //delete user form the database
-profileRouter.delete("/delete", async (req, res) => {
+profileRouter.delete("/delete", userAuth, async (req, res) => {
     const userId = req.body.userId;
 
     try {

@@ -40,7 +40,9 @@ Promise.all([connectDB(), connectRedis()])
         console.log("Connected to Redis successfully...");
         app.use(createRateLimiter()); // Apply rate limiter to all routes (100 requests per 15 minutes)
 
-
+        app.get('/', (req, res) => {
+            res.send('Welcome to WebTinder API');
+        });
         app.use("/", authRouter)
         app.use("/", profileRouter)
         app.use("/", requestRouter)
@@ -58,8 +60,6 @@ Promise.all([connectDB(), connectRedis()])
 
 
 
-app.get('/', (req, res) => {
-    res.send('Welcome to WebTinder API');
-});
+
 
 

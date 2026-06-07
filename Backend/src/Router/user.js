@@ -6,7 +6,7 @@ const User = require("../models/userSchema");
 const userRouter = express.Router();
 
 
-const USER_SAFE_DATA = "firstName lastName photoUrl age gender about skills";
+const USER_SAFE_DATA = "firstName lastName imageUrl age gender description skills";
 // receive connection
 userRouter.get("/user/request/received", userAuth, async (req, res) => {
   try {
@@ -16,7 +16,7 @@ userRouter.get("/user/request/received", userAuth, async (req, res) => {
       toUserId: loggedInUser._id,
       status: "interested",
 
-    }).populate("fromUserId", ["firstName", "lastName", "emailId"]);
+    }).populate("fromUserId", ["firstName", "lastName", "emailId","imageUrl", "age", "gender", "description"]);
     // we can pass this part ["firstName", "lastName"] in string like "firstName lastName" both the work in same way
 
     res.json({
