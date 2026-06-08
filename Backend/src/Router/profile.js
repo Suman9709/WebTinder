@@ -92,7 +92,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
 
 //delete user form the database
 profileRouter.delete("/delete", userAuth, async (req, res) => {
-    const userId = req.body.userId;
+    const userId = req.body._id;
 
     try {
         // const user = await User.findByIdAndDelete({_id:userId})   // both will work
