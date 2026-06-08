@@ -86,7 +86,7 @@ authRouter.post("/login", async (req, res) => {
         const user = await User.findOne({ emailId: emailId })
 
         if (!user) {
-            throw new Error("EmailId is not present in databse")
+            throw new Error("Invalid Credentials")
         }
 
         const isPasswordValid = await user.validatePassword(password)
@@ -113,7 +113,7 @@ authRouter.post("/login", async (req, res) => {
             res.send(user)
         }
         else {
-            throw new Error("password is not correct")
+            throw new Error("Invalid Credentials")
         }
 
     } catch (error) {
