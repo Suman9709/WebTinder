@@ -9,23 +9,7 @@ const profileRouter = express.Router();
 //get profile
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
     try {
-        // const cookies = req.cookies;
-        // const { token } = cookies
-        // if (!token) {
-        //     throw new Error("Invalid token")
-        // }
-        //validate token
-        // const isValidToken = await jwt.verify(token, process.env.JWT_SECRET_KEY) //this gives a decode mesaage that is id
-        // const { _id } = isValidToken
-        // console.log("Logged in user id is" + _id);
-
-        // const user = await User.findById(_id)
-
-        // console.log(isValidToken);
-
-        // res.send(user)
-
-        // new vwersion after middleware attach 
+        // new version after middleware attach 
         const user = req.user
         res.send(user)
     } catch (error) {
@@ -48,15 +32,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
 
 //update the user 
 profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
-    // const userId = req.body.userId;
-    // const data = req.body;
-    // try {
-    //     await User.findByIdAndUpdate({ _id: userId }, data)
-    //     res.send("User updated successfully")
-    // } catch (error) {
-    //     res.status(400).send("something went wring")
-    // }
-
+ 
     try {
         if (!validateEditProfileData(req)) {
             throw new Error("Invalid Edit request")
